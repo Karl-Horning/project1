@@ -26,8 +26,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Environment variables
+# Environment variables and setup
 .flaskenv
+config.py
 
 ### venv ###
 # Virtualenv
@@ -43,3 +44,8 @@ venv/
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+
+# Directories
+.vscode/
+flask_session/
+__pycache__/
