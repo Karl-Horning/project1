@@ -28,7 +28,6 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/index")
 def index():
     user = {'username': 'Karl'}
-    # return "Project 1: TODO"
     return render_template('index.html', user=user)
 
 @app.route("/login")
