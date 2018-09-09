@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    {{ book.title }} by {{ book.author }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ book.title }}</h1>
+    <p>by {{ book.author }}</p>
+
+    <ul>
+        <li><strong>Year:</strong> {{ book.year }}</li>
+        <li><strong>ISBN:</strong> {{ book.isbn }}</li>
+        <li><strong>Average Rating from Goodreads</strong> {{ Goodreads.average_rating }}</li>
+        <li><strong>Number of Ratings from Goodreads</strong> {{ Goodreads.number_of_ratings }}</li>
+    </ul>
+
+    <h2>Reader Reviews</h2>
+    <p>There are currently no reader reviews.</p>
+
+{% endblock %}

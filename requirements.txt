@@ -1,8 +1,0 @@
-Flask
-Flask-Session
-psycopg2
-SQLAlchemy
-
-flask-migrate
-flask-wtf
-python-dotenv

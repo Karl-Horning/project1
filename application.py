@@ -1,39 +1,43 @@
-import os
-
-from flask import flash, Flask, redirect, render_template, session, url_for
-from flask_session import Session
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from books.forms import LoginForm
+from flask import Flask, render_template, jsonify, request
+from models import *
 from config import Config
 
+import locale
+import requests
+
 app = Flask(__name__)
-app.config.from_object(Config)
-
-# Check for environment variable
-if not os.getenv('DATABASE_URL'):
-    raise RuntimeError('DATABASE_URL is not set')
-
-# Configure session to use filesystem
-app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_TYPE'] = 'filesystem'
-Session(app)
-
-# Set up database
-engine = create_engine(os.getenv('DATABASE_URL'))
-db = scoped_session(sessionmaker(bind=engine))
-
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+locale.setlocale(locale.LC_ALL, 'en_GB')
 
 @app.route('/')
-@app.route('/index')
 def index():
-    user = {'username': 'Karl'}
-    return render_template('index.html', user=user)
+    books = Book.query.limit(25).all()
+    return render_template('index.html', books=books)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        flash(f'Login requested for user {form.username.data}, remember_me={form.remember_me.data}')
-        return redirect(url_for('index'))        
-    return render_template('login.html', form=form)
+# @app.route('/books/<book_isbn>')
+# def books(book_isbn):
+#     """List the details of a book"""
+#     book = Book.query.with_entities(Book.isbn)
+#     # book = Book.query.get(book_id)
+#     if book is None:
+#         return render_template('error.html', message=f'No book with the ISBN {book_isbn} exists.')
+
+#     return render_template('book.html', book=book)
+
+@app.route('/books/<int:book_id>')
+def books(book_id):
+    """List the details of a book"""
+    book = Book.query.get(book_id)
+    if book is None:
+        return render_template('error.html', message=f'No book with the ID {book_id} exists.')
+
+    # Make request to Goodreads API
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": Config.KEY, "isbns": book.isbn})
+    # Create an object with the needed JSON data
+    class Goodreads(object):
+        average_rating = res.json()['books'][0]['average_rating']
+        number_of_ratings = locale.format('%d', res.json()['books'][0]['work_ratings_count'], grouping=True)
+
+    return render_template('book.html', book=book, Goodreads=Goodreads)
