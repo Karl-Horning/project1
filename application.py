@@ -32,22 +32,6 @@ def books(isbn):
 
     return render_template('book.html', book=book, Goodreads=Goodreads)
 
-# @app.route('/books/<int:book_id>')
-# def books(book_id):
-#     """List the details of a book"""
-#     book = Book.query.get(book_id)
-#     if book is None:
-#         return render_template('error.html', message=f'No book with the ID {book_id} exists.')
-
-#     # Make request to Goodreads API
-#     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": Config.KEY, "isbns": book.isbn})
-#     # Create an object with the needed JSON data
-#     class Goodreads(object):
-#         average_rating = res.json()['books'][0]['average_rating']
-#         number_of_ratings = locale.format('%d', res.json()['books'][0]['work_ratings_count'], grouping=True)
-
-#     return render_template('book.html', book=book, Goodreads=Goodreads)
-
 @app.route('/test')
 def test():
     q = 'dav'
