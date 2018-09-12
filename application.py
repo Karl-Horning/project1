@@ -33,10 +33,21 @@ def books(isbn):
     return render_template('book.html', book=book, Goodreads=Goodreads)
 
 @app.route('/api/<isbn>')
-def api(isbn):
-    """List the book's API"""
+def book_api(isbn):
+    """List the details of a book as JSON"""
     book =  db.engine.execute(f"SELECT * FROM books WHERE isbn = '{isbn}'").fetchone()
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": Config.KEY, "isbns": isbn})
+    class Goodreads(object):
+        average_rating = res.json()['books'][0]['average_rating']
+        number_of_ratings = res.json()['books'][0]['work_ratings_count']
+    return jsonify({
+        "title": book[2],
+        "author": book[3],
+        "year": book[4],
+        "isbn": book[1],
+        "review_count": Goodreads.number_of_ratings,
+        "average_score": Goodreads.average_rating
+    })
 
 @app.route('/test')
 def test():
