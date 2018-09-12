@@ -5,12 +5,12 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{ book[0][2] }}</h1>
-    <p>by {{ book[0][3] }}</p>
+    <h1>{{ book[2] }}</h1>
+    <p>by {{ book[3] }}</p>
 
     <ul>
-        <li><strong>Year:</strong> {{ book[0][4] }}</li>
-        <li><strong>ISBN:</strong> {{ book[0][1] }}</li>
+        <li><strong>Year:</strong> {{ book[4] }}</li>
+        <li><strong>ISBN:</strong> {{ book[1] }}</li>
         <li><strong>Average Rating from Goodreads</strong> {{ Goodreads.average_rating }}</li>
         <li><strong>Number of Ratings from Goodreads</strong> {{ Goodreads.number_of_ratings }}</li>
     </ul>
