@@ -20,9 +20,9 @@
             {% for book in books %}
                 <tr>
                     <th scope="row">{{ book.id }}</th>
-                    <td><a href="books/{{ book.isbn }}">{{ book.isbn }}</a></td>
-                    <td><a href="books/{{ book.isbn }}">{{ book.title }}</a></td>
-                    <td><a href="books/{{ book.isbn }}">{{ book.author }}</a></td>
+                    <td><a href="book/{{ book.isbn }}">{{ book.isbn }}</a></td>
+                    <td><a href="book/{{ book.isbn }}">{{ book.title }}</a></td>
+                    <td><a href="book/{{ book.isbn }}">{{ book.author }}</a></td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -1,8 +1,9 @@
 from flask import Flask, render_template, jsonify, request
-from models import *
+from models import db
 from config import Config
 
 import locale
+import os
 import requests
 
 app = Flask(__name__)
@@ -16,8 +17,8 @@ def index():
     books = db.engine.execute('SELECT * FROM books LIMIT 50')
     return render_template('index.html', books=books)
 
-@app.route('/books/<isbn>')
-def books(isbn):
+@app.route('/book/<isbn>')
+def book(isbn):
     """List the details of a book"""
     book =  db.engine.execute(f"SELECT * FROM books WHERE isbn = '{isbn}'").fetchone()
 
@@ -41,7 +42,9 @@ def book_api(isbn):
     if book is None:
         return render_template('404.html'), 404
     
+    # Make request to Goodreads API
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": Config.KEY, "isbns": isbn})
+    # Create an object with the needed JSON data
     class Goodreads(object):
         average_rating = res.json()['books'][0]['average_rating']
         number_of_ratings = res.json()['books'][0]['work_ratings_count']
