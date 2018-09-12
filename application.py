@@ -20,8 +20,9 @@ def index():
 def books(isbn):
     """List the details of a book"""
     book =  db.engine.execute(f"SELECT * FROM books WHERE isbn = '{isbn}'").fetchone()
+
     if book is None:
-        return render_template('error.html', message=f'No book with the ID {isbn} exists.')
+        return render_template('404.html'), 404
 
     # Make request to Goodreads API
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": Config.KEY, "isbns": isbn})
@@ -36,6 +37,10 @@ def books(isbn):
 def book_api(isbn):
     """List the details of a book as JSON"""
     book =  db.engine.execute(f"SELECT * FROM books WHERE isbn = '{isbn}'").fetchone()
+    
+    if book is None:
+        return render_template('404.html'), 404
+    
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": Config.KEY, "isbns": isbn})
     class Goodreads(object):
         average_rating = res.json()['books'][0]['average_rating']
@@ -56,3 +61,8 @@ def test():
     # books = db.engine.execute(f"SELECT * FROM books WHERE LOWER(author) LIKE LOWER('%%{q}%%')")
     books = db.engine.execute(f"SELECT * FROM books WHERE isbn = '0316010766'")
     return render_template('test.html', books=books)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
