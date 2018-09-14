@@ -57,12 +57,49 @@ def book_api(isbn):
         "average_score": Goodreads.average_rating
     })
 
-@app.route('/test')
+@app.route('/test', methods=['POST', 'GET'])
 def test():
-    q = 'dav'
+    if request.method == 'POST':
+        q = request.form['q']
+    else:
+        q = '0316010766'
     # books = db.engine.execute("SELECT * FROM books WHERE LOWER(author) = LOWER('Henry James')")
     # books = db.engine.execute(f"SELECT * FROM books WHERE LOWER(author) LIKE LOWER('%%{q}%%')")
-    books = db.engine.execute(f"SELECT * FROM books WHERE isbn = '0316010766'")
+    
+    # books = db.engine.execute(f"SELECT * FROM books \
+    #                             WHERE isbn = '{q}'")
+
+    books = db.engine.execute(f"SELECT * FROM books \
+                                WHERE ( \
+                                    isbn LIKE '{q}' \
+                                ) \
+                                OR ( \
+                                    LOWER(title) LIKE LOWER('%%{q}%%') \
+                                ) \
+                                OR ( \
+                                    LOWER(author) LIKE LOWER('%%{q}%%') \
+                                ) \
+                                ORDER BY ( \
+                                    ( \
+                                        CASE WHEN author LIKE LOWER('%%{q}%%') \
+                                        THEN 1 \
+                                        ELSE 0 \
+                                        END \
+                                    ) \
+                                    + ( \
+                                        CASE WHEN isbn LIKE LOWER('{q}') \
+                                        THEN 1 \
+                                        ELSE 0 \
+                                        END \
+                                    ) \
+                                    + ( \
+                                        CASE WHEN title LIKE LOWER('%%{q}%%') \
+                                        THEN 1 \
+                                        ELSE 0 \
+                                        END \
+                                    ) \
+                                ) \
+                                DESC")
     return render_template('test.html', books=books)
 
 

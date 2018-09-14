@@ -7,6 +7,12 @@
 {% block body %}
     <h1>Books</h1>
 
+    <form action="/test" method="POST">
+        <p>Search</p>
+        <input type="text" name="q">
+        <input type="submit" value="Search">
+    </form>
+
     <table class="table table-hover table-dark table-striped">
         <thead class="thead-dark">
             <tr>
@@ -20,12 +26,9 @@
             {% for book in books %}
                 <tr>
                     <th scope="row">{{ book.id }}</th>
-                    <!-- <td><a href="books/{{ book.isbn }}">{{ book.isbn }}</a></td>
-                    <td><a href="books/{{ book.isbn }}">{{ book.title }}</a></td>
-                    <td><a href="books/{{ book.isbn }}">{{ book.author }}</a></td> -->
-                    <td><a href="books/{{ book.id }}">{{ book.isbn }}</a></td>
-                    <td><a href="books/{{ book.id }}">{{ book.title }}</a></td>
-                    <td><a href="books/{{ book.id }}">{{ book.author }}</a></td>
+                    <td><a href="book/{{ book.isbn }}">{{ book.isbn }}</a></td>
+                    <td><a href="book/{{ book.isbn }}">{{ book.title }}</a></td>
+                    <td><a href="book/{{ book.isbn }}">{{ book.author }}</a></td>
                 </tr>
             {% endfor %}
         </tbody>
