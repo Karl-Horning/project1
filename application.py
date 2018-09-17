@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import db
+from models import *
 from config import Config
 
 import locale
@@ -101,6 +101,14 @@ def test():
                                 ) \
                                 DESC")
     return render_template('test.html', books=books)
+
+@app.route('/register')
+def register():
+    """Register a new user"""
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    return render_template('register.html')
 
 
 @app.errorhandler(404)
